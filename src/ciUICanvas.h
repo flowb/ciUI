@@ -411,18 +411,18 @@ public:
         switch(_kind)
         {
             case CI_UI_FONT_LARGE:                                              
-                fontLarge = Font( loadResource(fontName), _size);                
+                fontLarge = Font( fontName, _size);                
                 font_large = gl::TextureFont::create(fontLarge);                
                 break; 
 
             case CI_UI_FONT_MEDIUM:
-                fontMedium = Font( loadResource(fontName), _size);                
+                fontMedium = Font( fontName, _size);                
                 font_medium = gl::TextureFont::create(fontMedium);                
                 
                 break; 
 
             case CI_UI_FONT_SMALL:
-                fontSmall = Font( loadResource(fontName), _size);
+                fontSmall = Font( fontName, _size);
                 font_small = gl::TextureFont::create(fontSmall);                
                 
                 break; 
@@ -507,16 +507,16 @@ public:
 	//Touch Callbacks
     void enableTouchEventCallbacks()
     {
-        mCbTouchesBegan = mApp->registerTouchesBegan(this, &ciUICanvas::canvasTouchesBegan); 
-        mCbTouchesMoved = mApp->registerTouchesMoved(this, &ciUICanvas::canvasTouchesMoved); 
-        mCbTouchesEnded = mApp->registerTouchesEnded(this, &ciUICanvas::canvasTouchesEnded); 
+		mCbTouchesBegan = mApp->getWindow()->getSignalTouchesBegan().connect( std::bind( &ciUICanvas::canvasTouchesBegan, this, std::_1 ) );
+		mCbTouchesMoved = mApp->getWindow()->getSignalTouchesMoved().connect( std::bind( &ciUICanvas::canvasTouchesMoved, this, std::_1 ) );
+		mCbTouchesEnded = mApp->getWindow()->getSignalTouchesEnded().connect( std::bind( &ciUICanvas::canvasTouchesEnded, this, std::_1 ) );
     }	
 
 	void disableTouchEventCallbacks()
     {
-        mApp->unregisterTouchesBegan( mCbTouchesBegan );
-        mApp->unregisterTouchesMoved( mCbTouchesMoved );
-        mApp->unregisterTouchesEnded( mCbTouchesEnded );
+		mCbTouchesBegan.disconnect();
+		mCbTouchesMoved.disconnect();
+		mCbTouchesEnded.disconnect();
     }	
 	
 #else
@@ -524,33 +524,33 @@ public:
 	//Mouse Callbacks
     void enableMouseEventCallbacks()
     {
-        mCbMouseDown = mApp->registerMouseDown( this, &ciUICanvas::canvasMouseDown );
-        mCbMouseUp = mApp->registerMouseUp( this, &ciUICanvas::canvasMouseUp );	
-        mCbMouseMove = mApp->registerMouseMove( this, &ciUICanvas::canvasMouseMove );
-        mCbMouseDrag = mApp->registerMouseDrag( this, &ciUICanvas::canvasMouseDrag );	
+		mCbMouseDown = mApp->getWindow()->getSignalMouseDown().connect( std::bind( &ciUICanvas::canvasMouseDown, this, std::_1 ) );
+		mCbMouseUp = mApp->getWindow()->getSignalMouseUp().connect( std::bind( &ciUICanvas::canvasMouseUp, this, std::_1 ) );
+		mCbMouseMove = mApp->getWindow()->getSignalMouseMove().connect( std::bind( &ciUICanvas::canvasMouseMove, this, std::_1 ) );
+		mCbMouseDrag = mApp->getWindow()->getSignalMouseDrag().connect( std::bind( &ciUICanvas::canvasMouseDrag, this, std::_1 ) );
     }
 
 	//Mouse Callbacks
     void disableMouseEventCallbacks()
     {
-        mApp->unregisterMouseDown( mCbMouseDown );
-        mApp->unregisterMouseUp( mCbMouseUp );	
-        mApp->unregisterMouseMove( mCbMouseMove );
-        mApp->unregisterMouseDrag( mCbMouseDrag );	
+		mCbMouseDown.disconnect();
+		mCbMouseUp.disconnect();
+		mCbMouseMove.disconnect();
+		mCbMouseDrag.disconnect();
     }	
 
     //KeyBoard Callbacks
 	void enableKeyEventCallbacks()
 	{
-        mCbKeyDown = mApp->registerKeyDown( this, &ciUICanvas::canvasKeyDown );
-        mCbKeyUp = mApp->registerKeyUp( this, &ciUICanvas::canvasKeyUp );
+		mCbKeyDown = mApp->getWindow()->getSignalKeyDown().connect( std::bind( &ciUICanvas::canvasKeyDown, this, std::_1 ) );
+		mCbKeyUp = mApp->getWindow()->getSignalKeyUp().connect( std::bind( &ciUICanvas::canvasKeyUp, this, std::_1 ) );
 	}
 
 	//KeyBoard Callbacks
 	void disableKeyEventCallbacks()
 	{
-        mApp->unregisterKeyDown( mCbKeyDown ); 
-        mApp->unregisterKeyUp( mCbKeyUp );         
+		mCbKeyDown.disconnect();
+		mCbKeyUp.disconnect();       
 	}
     
 #endif	    
@@ -2136,9 +2136,10 @@ protected:
     app::AppCocoaTouch *mApp;
     ci::CallbackId mCbTouchesBegan, mCbTouchesMoved, mCbTouchesEnded; 
 #else
-    app::App *mApp;    	
-    ci::CallbackId mCbMouseDown, mCbMouseDrag, mCbMouseUp, mCbMouseMove;
-    ci::CallbackId mCbKeyDown, mCbKeyUp;
+    app::App *mApp;
+
+    ci::signals::scoped_connection mCbMouseDown, mCbMouseDrag, mCbMouseUp, mCbMouseMove;
+    ci::signals::scoped_connection mCbKeyDown, mCbKeyUp;
 #endif 
     
     gl::TextureFontRef font_large; 	
@@ -2175,18 +2176,18 @@ protected:
         switch(_kind)
         {
             case CI_UI_FONT_LARGE:              
-                fontLarge = Font( loadResource(filename), fontsize);
+                fontLarge = Font( filename, fontsize);
                 font_large = gl::TextureFont::create(fontLarge);
                 break; 
                 
             case CI_UI_FONT_MEDIUM:
-                fontMedium = Font( loadResource(filename), fontsize);                
+                fontMedium = Font( filename, fontsize);                
                 font_medium = gl::TextureFont::create(fontMedium);
                 
                 break; 
                 
             case CI_UI_FONT_SMALL:
-                fontSmall = Font( loadResource(filename), fontsize);                
+                fontSmall = Font( filename, fontsize);                
                 font_small = gl::TextureFont::create(fontSmall);
 
                 break; 
