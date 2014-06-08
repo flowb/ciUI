@@ -122,7 +122,7 @@ public:
         {
             hasSharedResources = false;             
             fontName = CI_UI_FONT_NAME;
-            setFont(fontName);         
+            setFont(fontName);
         }
                 
 		font = font_medium; 
@@ -411,18 +411,21 @@ public:
         switch(_kind)
         {
             case CI_UI_FONT_LARGE:                                              
-                fontLarge = Font( fontName, _size);                
+                fontLarge = Font( loadResource(fontName), _size);
+                //fontLarge = Font( loadResource("Helvetica"), _size);
                 font_large = gl::TextureFont::create(fontLarge);                
                 break; 
 
             case CI_UI_FONT_MEDIUM:
-                fontMedium = Font( fontName, _size);                
+                fontMedium = Font( loadResource(fontName), _size);
+                //fontMedium = Font( loadResource("Helvetica"), _size);
                 font_medium = gl::TextureFont::create(fontMedium);                
                 
                 break; 
 
             case CI_UI_FONT_SMALL:
-                fontSmall = Font( fontName, _size);
+                fontSmall = Font( loadResource(fontName), _size);
+                //fontSmall = Font( loadResource("Helvetica"), _size);
                 font_small = gl::TextureFont::create(fontSmall);                
                 
                 break; 
@@ -805,7 +808,39 @@ public:
         rect->setWidth(maxWidth);
         rect->setHeight(maxHeight);
         paddedRect->setWidth(rect->getWidth()+padding*2.0f);
-        paddedRect->setHeight(rect->getHeight()+padding*2.0f);        
+        paddedRect->setHeight(rect->getHeight()+padding*2.0f);
+        myWidth = rect->getWidth();
+    }
+    
+    void autoSizeToFitWidgetsV()
+    {
+        //float maxWidth = 0;
+        float maxHeight = 0;
+        
+        for(unsigned int i = 0; i < widgets.size(); i++)
+        {
+            if(widgets[i]->isVisible())
+            {
+                ciUIRectangle* wr = widgets[i]->getRect();
+                //float widgetwidth = wr->getRawX()+wr->getWidth();
+                
+                float widgetheight = wr->getRawY()+wr->getHeight();
+                
+                /*if(widgetwidth > maxWidth)
+                {
+                    maxWidth = wr->getRawX()+widgets[i]->getPaddingRect()->getWidth();
+                }*/
+                if(widgetheight > maxHeight)
+                {
+                    maxHeight = wr->getRawY()+widgets[i]->getPaddingRect()->getHeight();
+                }
+            }
+        }
+        
+        //rect->setWidth(maxWidth);
+        rect->setHeight(maxHeight);
+        //paddedRect->setWidth(rect->getWidth()+padding*2.0f);
+        paddedRect->setHeight(rect->getHeight()+padding*2.0f);
     }
     
     void centerWidgetsOnCanvas(bool centerHorizontally=true, bool centerVertically=true)
@@ -989,13 +1024,13 @@ public:
             
             widgetsWithState.push_back(widget);                         
 		}		
-		else if(widget->getKind() == CI_UI_WIDGET_BUTTON || widget->getKind() == CI_UI_WIDGET_TOGGLE || widget->getKind() ==  CI_UI_WIDGET_LABELBUTTON || widget->getKind() == CI_UI_WIDGET_LABELTOGGLE || widget->getKind() == CI_UI_WIDGET_MULTIIMAGEBUTTON || widget->getKind() == CI_UI_WIDGET_MULTIIMAGETOGGLE)
+		else if(widget->getKind() == CI_UI_WIDGET_BUTTON || widget->getKind() == CI_UI_WIDGET_TOGGLE || widget->getKind() ==  CI_UI_WIDGET_LABELBUTTON || widget->getKind() == CI_UI_WIDGET_LABELTOGGLE || widget->getKind() == CI_UI_WIDGET_MULTIIMAGEBUTTON || widget->getKind() == CI_UI_WIDGET_MULTIIMAGETOGGLE || widget->getKind() == CI_UI_WIDGET_GINKGOOBJECT)
 		{
 			ciUIButton *button = (ciUIButton *) widget;
 			ciUILabel *label = (ciUILabel *) button->getLabel();
 			setLabelFont(label); 			
 			pushbackWidget(label); 		
-            if(widget->getKind() != CI_UI_WIDGET_BUTTON && widget->getKind() != CI_UI_WIDGET_LABELBUTTON && widget->getKind() != CI_UI_WIDGET_MULTIIMAGEBUTTON)
+            if(widget->getKind() != CI_UI_WIDGET_BUTTON && widget->getKind() != CI_UI_WIDGET_LABELBUTTON && widget->getKind() != CI_UI_WIDGET_MULTIIMAGEBUTTON && widget->getKind() != CI_UI_WIDGET_GINKGOOBJECT)
             {
                 widgetsWithState.push_back(widget);                         
             }
@@ -1821,7 +1856,7 @@ public:
                                 
             case CI_UI_THEME_LIMESTONE2:
             {
-                ColorA cb = ColorA( 0.396078f, 0.384314f, 0.45098f, 0.294118f );
+                ColorA cb = ColorA( 0.196078f, 0.184314f, 0.20098f, 0.794118f );
                 ColorA co = ColorA( 0.34902f, 0.729412f, 0.662745f, 0.392157f );
                 ColorA coh = ColorA( 0.396078f, 0.384314f, 0.45098f, 0.784314f );
                 ColorA cf = ColorA( 0.847059f, 0.945098f, 0.443137f, 0.784314f );
@@ -2118,7 +2153,11 @@ public:
         uiEventCallbackMgr.unregisterCb( id ); 
     }
 
-	
+	float getCanvasWidth()
+    {
+        return myWidth;    
+    }
+    
 protected:    
     
     void pushbackWidget(ciUIWidget *widget)
@@ -2167,32 +2206,48 @@ protected:
     bool hasKeyBoard; 
     
     float widgetSpacing; 
+    float myWidth;
     
     string fontName;
 
     bool updateFont(ciUIWidgetFontType _kind, string filename, int fontsize) 
     {
         bool success = true;
+        
         switch(_kind)
         {
-            case CI_UI_FONT_LARGE:              
+            case CI_UI_FONT_LARGE:
                 fontLarge = Font( filename, fontsize);
                 font_large = gl::TextureFont::create(fontLarge);
-                break; 
+                break;
                 
             case CI_UI_FONT_MEDIUM:
-                fontMedium = Font( filename, fontsize);                
+                fontMedium = Font( filename, fontsize);
                 font_medium = gl::TextureFont::create(fontMedium);
-                
-                break; 
+                break;
                 
             case CI_UI_FONT_SMALL:
-                fontSmall = Font( filename, fontsize);                
+                fontSmall = Font( filename, fontsize);
                 font_small = gl::TextureFont::create(fontSmall);
-
-                break; 
+                break;
 
         }
+        /*
+        if (_kind == CI_UI_FONT_LARGE)
+        {
+            fontLarge = Font( loadResource(filename), fontsize);
+            font_large = gl::TextureFont::create(fontLarge);
+        }
+        else if (_kind == CI_UI_FONT_MEDIUM)
+        {
+            fontMedium = Font( loadResource(filename), fontsize);
+            font_medium = gl::TextureFont::create(fontMedium);
+        }
+        else if (_kind == CI_UI_FONT_SMALL)
+        {
+            fontSmall = Font( loadResource(filename), fontsize);
+            font_small = gl::TextureFont::create(fontSmall);
+        }*/
         return success;
     }
     

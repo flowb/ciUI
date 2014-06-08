@@ -90,7 +90,8 @@ enum ciUIWidgetType
     CI_UI_WIDGET_MULTIIMAGESLIDER_H = 32,
     CI_UI_WIDGET_MULTIIMAGESLIDER_V = 33,
     CI_UI_WIDGET_IMAGESLIDER_H = 34,
-    CI_UI_WIDGET_IMAGESLIDER_V = 35
+    CI_UI_WIDGET_IMAGESLIDER_V = 35,
+    CI_UI_WIDGET_GINKGOOBJECT = 36
 };
 
 enum ciUIWidgetOrientation
@@ -183,7 +184,10 @@ enum ciUIThemeType
     CI_UI_THEME_MINBLACK
 };
 
-#define CI_UI_FONT_NAME "NewMedia Fett.ttf"
+//#define CI_UI_FONT_NAME "NewMedia"
+//#define CI_UI_FONT_NAME "Helvetica"
+//#define CI_UI_FONT_NAME "NewMedia Fett.ttf"
+#define CI_UI_FONT_NAME "Helvetica Neue Condensed Bold"
 
 #define CI_UI_FONT_RESOLUTION 150
 
@@ -195,8 +199,8 @@ enum ciUIThemeType
 
 #else
 
-#define CI_UI_FONT_LARGE_SIZE 24
-#define CI_UI_FONT_MEDIUM_SIZE 18
+#define CI_UI_FONT_LARGE_SIZE 32
+#define CI_UI_FONT_MEDIUM_SIZE 24
 #define CI_UI_FONT_SMALL_SIZE 16
 
 #endif 
@@ -223,6 +227,7 @@ enum ciUIThemeType
 #include "ciUI2DPad.h"
 #include "ciUIToggleMatrix.h"
 #include "ciUILabelButton.h"
+#include "ciUIGinkgoObject.h"
 #include "ciUILabelToggle.h"
 #include "ciUIDropDownList.h"
 #include "ciUINumberDialer.h"

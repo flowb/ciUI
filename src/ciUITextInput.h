@@ -217,14 +217,16 @@ public:
                         it=displaystring.begin();
                         displaystring.erase (it);                    
                     }
-                    label->setLabel(displaystring);                         
+                    label->setLabel(displaystring);
+                     cout << event.getCode() << endl;
                 }
 					break;
 			}
             float h = label->getRect()->getHeight(); 			
 			float ph = rect->getHeight(); 
 			label->getRect()->setY(ph/2.0f - h/2.0f); 
-        }        
+        }
+       
     }
     
     void unClick()

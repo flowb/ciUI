@@ -112,7 +112,7 @@ public:
             *valueRef = value; 
         }
 
-		labelPrecision = 2; 
+		labelPrecision = 3;
         rangeX = _rangeX; 
         rangeY = _rangeY; 
         
@@ -141,7 +141,7 @@ public:
 		label->setParent(label); 
 		label->setRectParent(rect);         
         label->setEmbedded(true);
-        increment = 1.0; 
+        increment = 0.001;
     }
     
     virtual void update()
@@ -361,6 +361,15 @@ public:
         updateValueRef();          							                
 		updateLabel(); 
 	}
+    
+    void setMyValue(float iXVal, float iYVal)
+    {
+        value.x = iXVal;
+        value.y = iYVal;
+        
+        updateValueRef();
+		updateLabel();
+    }
 	
     void updateValueRef()
     {

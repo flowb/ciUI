@@ -192,7 +192,7 @@ public:
             }
 #endif 
             setValue(false); 
-			triggerEvent(this); 
+			//triggerEvent(this);
         }    
         else
         {
@@ -293,10 +293,17 @@ public:
 	  setValue(!(*value));
 	}
     
+    bool hitMe()
+    {
+        return pressed;
+    }
+    
 protected:    //inherited: ciUIRectangle *rect; ciUIWidget *parent; 
     bool *value; 
     bool useReference; 
-    bool drawLabel; 
+    bool drawLabel;
+    
+    bool pressed;
 }; 
 
 #endif

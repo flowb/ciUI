@@ -145,7 +145,7 @@ public:
     void drawBackLabel()
     {      
         ci::gl::color(color_back);
-        font->drawString(label, Vec2f(floor(rect->getX())+CI_UI_LABEL_SHADOW_OFFSET+xOffset, floor(rect->getY()+CI_UI_LABEL_SHADOW_OFFSET+yOffset)));            
+        font->drawString(label, Vec2f(floor(rect->getX())+CI_UI_LABEL_SHADOW_OFFSET+xOffset, floor(rect->getY()+CI_UI_LABEL_SHADOW_OFFSET+yOffset)));
     }
     
 	void drawString(float x, float y, std::string _string)
@@ -231,6 +231,12 @@ public:
 		setLabel(label); 
 	}
 	
+    bool insideMe(int x, int y)
+    {
+        return rect->inside((float) x, (float) y);
+        
+    }
+    
 	int getSize()
 	{
 		return size; 

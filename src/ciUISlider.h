@@ -101,7 +101,7 @@ public:
         
 		max = _max; 
 		min = _min; 
-        labelPrecision = 2;
+        labelPrecision = 3;
 
 		if(value > max)
 		{
@@ -126,7 +126,7 @@ public:
 		label->setParent(label); 
 		label->setRectParent(rect); 
         label->setEmbedded(true);
-        increment = 0.1f;         
+        increment = 0.001f;
     }
 
     virtual void update()
@@ -243,7 +243,11 @@ public:
             state = CI_UI_STATE_DOWN;     
 			input((float) x, (float) y); 
 			triggerEvent(this); 
-        }    
+        }
+        else if (label->insideMe( x, y ))
+        {
+            cout << "label for " << name << " was clicked." << endl;
+        }
         else
         {
             state = CI_UI_STATE_NORMAL;        
@@ -278,22 +282,22 @@ public:
 			switch (event.getCode()) 
 			{
 				case ci::app::KeyEvent::KEY_RIGHT:
-					setValue(getScaledValue()+increment); 
+					setMyValue(getScaledValue()+increment);
 					triggerEvent(this); 
 					break;
                     
 				case ci::app::KeyEvent::KEY_UP:
-					setValue(getScaledValue()+increment); 
+					setMyValue(getScaledValue()+increment);
 					triggerEvent(this); 
 					break;
 					
 				case ci::app::KeyEvent::KEY_LEFT:
-					setValue(getScaledValue()-increment); 					
+					setMyValue(getScaledValue()-increment);
 					triggerEvent(this); 
 					break;
                     
 				case ci::app::KeyEvent::KEY_DOWN:
-					setValue(getScaledValue()-increment); 					
+					setMyValue(getScaledValue()-increment);
 					triggerEvent(this); 
 					break;					
                     
@@ -346,6 +350,13 @@ public:
 		updateLabel(); 
 	}
 
+    virtual void setValue(float iVal)
+    {
+        value = iVal;
+        updateValueRef();
+        updateLabel();
+    }
+    
     void updateValueRef()
     {
         (*valueRef) = getScaledValue();  
@@ -396,7 +407,7 @@ public:
         }        
     }
 	
-	void setValue(float _value)
+	void setMyValue(float _value)
 	{
 		value = ci::lmap<float>(_value, min, max, 0.0, 1.0);
         if(value > 1.0f)
